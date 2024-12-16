@@ -13,12 +13,21 @@ except Exception as ex:
     print(ex)
 
 
-async def registration(id_tg):
-    cursor.execute(f"SELECT `id_tg` FROM `users` WHERE `id_tg` = '{id_tg}'")
+async def registration(id_tg, username):
+    cursor.execute(f"SELECT `username` FROM `users` WHERE `id_tg` = '{id_tg}'")
     result = cursor.fetchone()
+    if result:
+        if result['username'] != username:
+            cursor.execute(f"UPDATE `users` SET `username`='{username}' WHERE `id_tg` = '{id_tg}'")
     if not result:
-        cursor.execute(f"INSERT INTO `users`(`id_tg`, `send_greetings`) VALUES ('{id_tg}', '0')")
+        cursor.execute(f"INSERT INTO `users`(`id_tg`, `username`, `send_greetings`) VALUES ('{id_tg}', '{username}', '0')")
         connect.commit()
+
+
+async def get_users():
+    cursor.execute(f"SELECT `id_tg`, `send_greetings` FROM `users`")
+    result = cursor.fetchall()
+    return result
 
 
 async def get_users():
@@ -41,7 +50,19 @@ async def get_greeting():
 
 
 async def set_greetings_for_friend(id_tg, data):
-    cursor.execute(f"SELECT `id` FROM `users` WHERE `id_tg` = '{id_tg}'")
+    cursor.execute(f"SELECT `id_tg` FROM `users` WHERE `username` = '{data["username"]}'")
     result = cursor.fetchone()
-    cursor.execute(f"INSERT INTO `greetings_for_friend`(`id_user`, `username_recipient`, greeting) VALUES ('{result["id"]}', '{data["username"]}', '{data["text"]}')")
-    connect.commit()
+    if result:
+        cursor.execute(f"SELECT `id`, `username` FROM `users` WHERE `id_tg` = '{id_tg}'")
+        res = cursor.fetchone()
+        cursor.execute(f"INSERT INTO `greetings_for_friend`(`id_user`, `id_tg_recipient`, greeting) VALUES ('{res["id"]}', '{result['id_tg']}', '{data["text"]}\n\tОт {res['username']}')")
+        connect.commit()
+        return True
+    else:
+        return False
+
+
+async def get_all_for_friends():
+    cursor.execute(f"SELECT * FROM `greetings_for_friend`")
+    result = cursor.fetchall()
+    return result
