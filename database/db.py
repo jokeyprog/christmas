@@ -24,11 +24,6 @@ async def registration(id_tg, username):
         connect.commit()
 
 
-async def get_users():
-    cursor.execute(f"SELECT `id_tg`, `send_greetings` FROM `users`")
-    result = cursor.fetchall()
-    return result
-
 
 async def get_users():
     cursor.execute(f"SELECT `id_tg`, `send_greetings` FROM `users`")
@@ -55,7 +50,12 @@ async def set_greetings_for_friend(id_tg, data):
     if result:
         cursor.execute(f"SELECT `id`, `username` FROM `users` WHERE `id_tg` = '{id_tg}'")
         res = cursor.fetchone()
-        cursor.execute(f"INSERT INTO `greetings_for_friend`(`id_user`, `id_tg_recipient`, greeting) VALUES ('{res["id"]}', '{result['id_tg']}', '{data["text"]}\n\tОт {res['username']}')")
+        if res['username'] == None:
+            print(res['username'])
+            cursor.execute(f"INSERT INTO `greetings_for_friend`(`id_user`, `id_tg_recipient`, greeting) VALUES ('{res["id"]}', '{result['id_tg']}', '{data["text"]}\n\tОт одного из друзей')")
+        else:
+            print(res['username'])
+            cursor.execute(f"INSERT INTO `greetings_for_friend`(`id_user`, `id_tg_recipient`, greeting) VALUES ('{res["id"]}', '{result['id_tg']}', '{data["text"]}\n\tОт {res['username']}')")
         connect.commit()
         return True
     else:

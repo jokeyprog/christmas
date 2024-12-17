@@ -6,4 +6,5 @@ async def menu_kb():
     menu.row(types.InlineKeyboardButton(text="Хочу получить поздравление от бота", callback_data="greeting"))
     menu.row(types.InlineKeyboardButton(text="Поиграть в монетку", callback_data="money"))
     menu.row(types.InlineKeyboardButton(text="Отправить поздравление другу", callback_data="greeting_to_friend"))
+    menu.row(types.InlineKeyboardButton(text="Посмотреть отправленные поздравления", callback_data="get_friends"))
     return menu.as_markup()

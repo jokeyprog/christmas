@@ -20,7 +20,10 @@ class Greetings(StatesGroup):
 
 @router.message(Command("start"))
 async def hello_message(message: types.Message):
-    await db.registration(message.from_user.id, '@' + message.from_user.username)
+    if message.from_user.username:
+        await db.registration(message.from_user.id, '@' + message.from_user.username)
+    else:
+        await db.registration(message.from_user.id, None)
     await scheduler.remove_jobs_from_scheduler()
     await scheduler.schedule()
     await message.answer("Привет! Я бот для поднятия новогоднего настроения!",  reply_markup= await kb.menu_kb())
