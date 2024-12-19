@@ -1,6 +1,6 @@
-from bot.create_bot import schedul, bot
 import datetime
 
+from bot.create_bot import schedul, bot
 from database import db
 
 
@@ -20,7 +20,6 @@ async def schedule():
     friends = await db.get_all_for_friends()
     for friend in friends:
         await add_scheduler_for_friends(friend['id_tg_recipient'], friend['greeting'])
-
 
 
 async def add_scheduler_for_users(id_user):
