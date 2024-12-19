@@ -1,6 +1,7 @@
 from aiogram import types
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
+
 async def menu_kb():
     menu = InlineKeyboardBuilder()
     menu.row(types.InlineKeyboardButton(text="Хочу получить поздравление от бота", callback_data="greeting"))
@@ -14,6 +15,7 @@ async def change_kb():
     builder = InlineKeyboardBuilder()
     builder.row(types.InlineKeyboardButton(text="Удалить поздравление", callback_data="delete"))
     return builder.as_markup()
+
 
 async def cancel_kb():
     builder = InlineKeyboardBuilder()

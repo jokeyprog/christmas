@@ -2,7 +2,6 @@ from aiogram import types, F, Router
 from aiogram.filters import Command, StateFilter
 from aiogram.filters.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
-# from bot.create_bot import bot
 import random
 
 from keyboards import keyboards as kb
