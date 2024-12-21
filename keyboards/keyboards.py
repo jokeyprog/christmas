@@ -21,3 +21,10 @@ async def cancel_kb():
     builder = InlineKeyboardBuilder()
     builder.row(types.InlineKeyboardButton(text="Отменить ввод", callback_data="cancel"))
     return builder.as_markup()
+
+
+async def money_kb():
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(text="Орёл", callback_data="eagle"), types.InlineKeyboardButton(text="Решка", callback_data="reshka"))
+    builder.row(types.InlineKeyboardButton(text="Отменить ввод", callback_data="cancel"))
+    return builder.as_markup()
