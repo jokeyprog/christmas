@@ -21,6 +21,10 @@ class DeleteGreetings(StatesGroup):
     username = State()
 
 
+class Money(StatesGroup):
+    text = State()
+
+
 @router.message(Command("start"))
 async def hello_message(message: types.Message):
     if message.from_user.username:
@@ -41,10 +45,29 @@ async def reg_on_greeting(callback: types.CallbackQuery):
 
 
 @router.callback_query(F.data == "money")
-async def money(callback: types.CallbackQuery):
+async def money(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer("Монетка подкинута!")
-    await callback.message.answer(f"Ура! Вам выпал {random.choice(['орёл', 'решка'])}!")
-    await callback.message.answer("Меню", reply_markup= await kb.menu_kb())
+    await callback.message.answer("Введите орел (обязательно с буквой е) или решка", reply_markup= await kb.cancel_kb())
+    await state.set_state(Money.text)
+
+
+@router.message(StateFilter(Money.text))
+async def answer_money(message: types.Message, state: FSMContext):
+    result = random.choice(['орел', 'решка'])
+    mes = str(message.text).lower()
+    # неизвестный баг с буквой ё
+    if mes == "орёл":
+        mes = "орел"
+    await state.update_data(text = mes)
+    if mes == "орел" or mes == "решка":
+        if mes == result:
+            await message.reply(f"Ура! Вы угадали, на монетке {result}!")
+        else:
+            await message.reply(f"Увы! Вы не угадали, на монетке {result}!")
+        await state.clear()
+        await message.answer("Меню", reply_markup= await kb.menu_kb())
+    else:
+        await message.answer("Вы ввели несуществующий ответ. Введите корректный ответ или отмените ввод", reply_markup=await kb.cancel_kb())
 
 
 @router.callback_query(F.data == "greeting_to_friend")
