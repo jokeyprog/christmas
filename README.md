@@ -34,7 +34,7 @@
 ```
  pip install -r requirements.txt
 ```
-В config.py запишите токен вашго бота, который вы получили у BotFather
+В config.py запишите токен вашего бота, который вы получили у BotFather
 <br><br>
 Запустите main.py
 <br>
